@@ -39,7 +39,7 @@ can see every kind of finding without risking anything. Each file in it is a har
 Python 3.11 or newer. No third-party packages.
 
 ```bash
-pipx install greysweep
+pipx install git+https://github.com/121Nanami/greysweep
 ```
 
 Or from a checkout:
@@ -198,7 +198,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install greysweep
+      - run: pip install git+https://github.com/121Nanami/greysweep
       - run: greysweep scan . --no-user --no-ignore -f sarif -o greysweep.sarif --fail-on none
       - uses: github/codeql-action/upload-sarif@v3
         with:
