@@ -38,11 +38,14 @@ class Rule:
 
 
 _INVISIBLE = re.compile(r"[​-‏‪-‮⁠-⁩﻿\U000E0000-\U000E01EF]")
+# Scanned files are untrusted: an escape sequence in a report could repaint the terminal.
+_CONTROL = re.compile(r"[\x00-\x08\x0b-\x1f\x7f-\x9f]")
 
 
 def clip(text: str, limit: int = 180) -> str:
     """One printable line: invisible characters removed, whitespace collapsed."""
     text = " ".join(_INVISIBLE.sub("", text).split())
+    text = _CONTROL.sub("", text)
     return text if len(text) <= limit else text[: limit - 1] + "…"
 
 
@@ -59,7 +62,7 @@ class Finding:
         if self.severity is None:
             self.severity = self.rule.severity
         # Last line of defence: no report string leaves here unredacted.
-        self.detail = redact(self.detail)
+        self.detail = _CONTROL.sub("", redact(self.detail))
         self.evidence = clip(redact(self.evidence))
 
     def to_dict(self) -> dict:

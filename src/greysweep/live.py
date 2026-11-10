@@ -21,7 +21,8 @@ from .check_text import poison_reasons
 from .core import Finding, line_at
 from .rules import RULES
 
-UNSAFE_TO_START = {"GS-MCP-005", "GS-MCP-006", "GS-MCP-009", "GS-EXE-002", "GS-EXE-003"}
+# A shell-wrapped server (GS-MCP-004) can do anything, so it is never started either.
+UNSAFE_TO_START = {"GS-MCP-004", "GS-MCP-005", "GS-MCP-006", "GS-MCP-009", "GS-EXE-002", "GS-EXE-003"}
 PROTOCOL_VERSION = "2025-06-18"
 
 

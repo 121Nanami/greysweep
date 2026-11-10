@@ -259,7 +259,10 @@ def check_server(name: str, cfg: dict, context: str, path: Path, text: str,
         env = cfg["command"].get("env") or env
 
     if tokens:
-        behaviours = shellscan.analyze(cmdline)
+        # Analyse what would really run; the masked form is for display only, and masking
+        # must never be able to hide a command from the checks.
+        raw = " ".join(tokens)
+        behaviours = shellscan.analyze(raw)
         for rule_id, what in behaviours:
             add("GS-MCP-005" if rule_id == "GS-EXE-001" else rule_id, what, cmdline, tokens[0])
         base = _base(tokens[0])
@@ -289,7 +292,7 @@ def check_server(name: str, cfg: dict, context: str, path: Path, text: str,
                     break
 
         if base in {"docker", "podman", "nerdctl"}:
-            danger = DOCKER_DANGER.search(cmdline)
+            danger = DOCKER_DANGER.search(raw)
             if danger:
                 add("GS-MCP-008", f"uses {danger.group(0).strip()}", cmdline, tokens[0])
             image = _docker_image(tokens)
